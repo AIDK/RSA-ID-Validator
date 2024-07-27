@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using CashCrusaders.Utility.Response.Models;
+using Microsoft.VisualBasic;
 
 namespace CashCrusaders.Utility;
 
@@ -162,14 +163,7 @@ public static partial class IdentityNumber
     {
         var dob = GetDoB(idNumber);
 
-        return new IdentityResponse()
-        {
-            IsValid = true,
-            IsCitizen = IsCitizen(idNumber),
-            IsFemale = IsFemale(idNumber),
-            DateOfBirth = dob,
-            Age = GetAge(dob),
-        };
+        return new IdentityResponse(Age: GetAge(dob), DateOfBirth: dob, IsCitizen: IsCitizen(idNumber), IsFemale: IsFemale(idNumber), IsValid: true);
     }
 
     /// <summary>
@@ -260,7 +254,7 @@ public static partial class IdentityNumber
     /// This method will return an empty response
     /// </summary>
     /// <returns>Invalid IdentityResponse</returns>
-    private static IdentityResponse EmptyResponse() => new() { IsValid = false };
+    private static IdentityResponse EmptyResponse() => new(Age: null, DateOfBirth: null, IsCitizen: null, IsFemale: null, IsValid: false);
 
     [GeneratedRegex(@"^\d+$")]
     private static partial Regex NumberRegex();

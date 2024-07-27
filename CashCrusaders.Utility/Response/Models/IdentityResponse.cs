@@ -10,11 +10,11 @@
 /// <item>IsValid: will return if the ID number is valid or not</item>
 /// </list>
 /// </summary>
-public class IdentityResponse
+public record IdentityResponse(int? Age, DateOnly? DateOfBirth, bool? IsCitizen, bool? IsFemale, bool IsValid)
 {
-    public int? Age { get; set; } = 0;
-    public DateOnly? DateOfBirth { get; init; } = null;
-    public bool? IsCitizen { get; init; } = null;
-    public bool? IsFemale { get; init; } = null;
-    public bool IsValid { get; init; } = false;
+    public int? Age { get; init; } = Age;
+    public DateOnly? DateOfBirth { get; init; } = DateOfBirth;
+    public bool? IsCitizen { get; init; } = IsCitizen;
+    public bool? IsFemale { get; init; } = IsFemale;
+    public bool IsValid { get; init; } = IsValid;
 }
