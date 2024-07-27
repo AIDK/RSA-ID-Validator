@@ -17,4 +17,51 @@ public class Tests
         var result = IdentityNumber.Validate(id);
         Assert.That(result.IsValid, Is.EqualTo(expected));
     }
+
+    [Test]
+    public void IdentityNumberGetDOB()
+    {
+        var expected_86 = DateOnly.FromDateTime(new DateTime(1986, 08, 06));
+        var expected_00 = DateOnly.FromDateTime(new DateTime(2000, 08, 06));
+
+        var id_86 = "860806510608";
+        var id_00 = "000806510608";
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(IdentityNumber.GetDoB(id_86), Is.EqualTo(expected_86));
+            Assert.That(IdentityNumber.GetDoB(id_00), Is.EqualTo(expected_00));
+        });
+    }
+
+    [Test]
+    [TestCase("8608065106082", 38)]
+    [TestCase("0008065106082", 24)]
+    public void IdentityNumberGetAge(string idNumber, int expected)
+    {
+        var dob = IdentityNumber.GetDoB(idNumber);
+        var result = IdentityNumber.GetAge(dob);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
+
+    [Test]
+    [TestCase("8608065106082", false)]
+    [TestCase("8608064106082", true)]
+    public void IdentityNumberGetGender(string idNumber, bool expected)
+    {
+        var result = IdentityNumber.IsFemale(idNumber);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
+
+    [Test]
+    [TestCase("8608065106082", true)]
+    [TestCase("8608065106182", false)]
+    public void IdentityNumberIsCitizen(string idNumber, bool expected)
+    {
+        var result = IdentityNumber.IsCitizen(idNumber);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
 }
