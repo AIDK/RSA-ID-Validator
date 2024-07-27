@@ -180,19 +180,21 @@ public static partial class IdentityNumber
     /// </summary>
     /// <param name="idNumber">The id number of the individual</param>
     /// <returns>date</returns>
-    public static DateOnly GetDoB(string idNumber)
+    public static DateOnly? GetDoB(string idNumber)
     {
+        if (string.IsNullOrEmpty(idNumber)) return null;
+
         var dob = new
         {
             // 860806
-            Year = idNumber[..2],   // 86
-            Month = idNumber[2..2], // 08
-            Day = idNumber[4..2],   // 06
+            Year = idNumber[..2],               // 86
+            Month = idNumber.Substring(2, 2),   // 08
+            Day = idNumber.Substring(4, 2),     // 06
         };
 
         // we take the last two digits of the current year
         // which in 2024 will be the number 24
-        var lastTwoDigits = DateOnly.FromDateTime(DateTime.Now).Year.ToString()[2..2];
+        var lastTwoDigits = DateOnly.FromDateTime(DateTime.Now).Year.ToString().Substring(2, 2);
 
         // we evaluate whether the person was born within the last `24` years. We're using
         // 24 here because we are in the year 2024 (at the time of writing this code) however 
@@ -214,7 +216,11 @@ public static partial class IdentityNumber
     /// </summary>
     /// <param name="dob"></param>
     /// <returns>nullable int</returns>
-    public static int? GetAge(DateOnly dob) => DateOnly.FromDateTime(DateTime.Now).Year - dob.Year;
+    public static int? GetAge(DateOnly? dob)
+    {
+        if (dob is null) return null;
+        return DateOnly.FromDateTime(DateTime.Now).Year - dob.Value.Year;
+    }
 
     /// <summary>
     /// Determines the individual's gender from their ID number
@@ -234,7 +240,7 @@ public static partial class IdentityNumber
         // using the id number provided we get the first digit and evaluate
         // whether the person is Male or Female by checking whether the digit
         // is above or below 4***
-        var value = int.Parse(idNumber[6..1]);
+        var value = int.Parse(idNumber.Substring(6, 1));
 
         return value >= 0 && value <= 4;
     }
@@ -248,7 +254,7 @@ public static partial class IdentityNumber
     /// </summary>
     /// <param name="idNumber">The ID number of the individual</param>
     /// <returns>boolean</returns>
-    public static bool IsCitizen(string idNumber) => idNumber[10..1] == "0";
+    public static bool IsCitizen(string idNumber) => idNumber.Substring(10, 1) == "0";
 
     /// <summary>
     /// This method will return an empty response
